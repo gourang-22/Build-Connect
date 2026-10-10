@@ -9,9 +9,8 @@
 
 ![BuildConnect Walkthrough](./docs/demo-walkthrough.webp)
 
-*Interactive preview of the BuildConnect platform, showing responsive dashboards, public landing experience, and role-based portals.*
+*Complete video walkthrough of the BuildConnect platform, showcasing the public landing experience, role selection, and all 4 specialized portals (Skilled Worker, Contractor, Builder, and Domestic Homeowner).*
 
-> 📹 **Extended High-Definition Walkthrough**: View the full multi-portal walkthrough video in [`./docs/full-verification-tour.webp`](./docs/full-verification-tour.webp).
 
 ---
 
