@@ -62,10 +62,13 @@ app.get('/api/health', (_req, res) => {
   res.status(200).json({ success: true, message: 'BuildConnect API is running 🚀', timestamp: new Date() });
 });
 
-// ── API Routes ────────────────────────────────────────────────────────────────
+// ── API Routes (supports both /api/* and direct routes) ────────────────────────
 app.use('/api/auth', authRoutes);
+app.use('/auth', authRoutes);
 app.use('/api/jobs', jobRoutes);
+app.use('/jobs', jobRoutes);
 app.use('/api/teams', teamRoutes);
+app.use('/teams', teamRoutes);
 
 // ── Error Handling ────────────────────────────────────────────────────────────
 app.use(notFound);
