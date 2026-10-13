@@ -49,7 +49,15 @@ if (process.env.NODE_ENV === 'development') {
   });
 }
 
-// ── Health Check ──────────────────────────────────────────────────────────────
+// ── Health Check & Root ───────────────────────────────────────────────────────
+app.get('/', (_req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'BuildConnect Backend API is active 🚀',
+    health: '/api/health',
+  });
+});
+
 app.get('/api/health', (_req, res) => {
   res.status(200).json({ success: true, message: 'BuildConnect API is running 🚀', timestamp: new Date() });
 });
