@@ -18,9 +18,11 @@ const getWorkerFeed = asyncHandler(async (req, res) => {
 
   const filter = {
     targetAudience: 'worker',
-    tradeCategory,
     status: 'open',
   };
+  if (tradeCategory) {
+    filter.tradeCategory = tradeCategory;
+  }
 
   if (employerType && ['builder', 'contractor', 'domestic'].includes(employerType)) {
     filter.employerType = employerType;
@@ -28,7 +30,7 @@ const getWorkerFeed = asyncHandler(async (req, res) => {
   if (city) filter['location.city'] = { $regex: city, $options: 'i' };
 
   const skip = (Number(page) - 1) * Number(limit);
-  const [jobs, total] = await Promise.all([
+  let [jobs, total] = await Promise.all([
     Job.find(filter)
       .populate('postedBy', 'name companyName organizationName profileImage rating location')
       .sort({ createdAt: -1 })
@@ -36,6 +38,27 @@ const getWorkerFeed = asyncHandler(async (req, res) => {
       .limit(Number(limit)),
     Job.countDocuments(filter),
   ]);
+
+  // If no jobs match this worker's specific trade, fallback to showing all open worker jobs
+  if (jobs.length === 0 && tradeCategory) {
+    const fallbackFilter = {
+      targetAudience: 'worker',
+      status: 'open',
+    };
+    if (employerType && ['builder', 'contractor', 'domestic'].includes(employerType)) {
+      fallbackFilter.employerType = employerType;
+    }
+    if (city) fallbackFilter['location.city'] = { $regex: city, $options: 'i' };
+
+    [jobs, total] = await Promise.all([
+      Job.find(fallbackFilter)
+        .populate('postedBy', 'name companyName organizationName profileImage rating location')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(Number(limit)),
+      Job.countDocuments(fallbackFilter),
+    ]);
+  }
 
   res.status(200).json({
     success: true,

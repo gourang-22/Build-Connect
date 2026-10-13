@@ -22,15 +22,19 @@ const JobDetailsModal = ({ job, onClose, onApplySuccess, userTeam }) => {
     setSubmitting(true);
 
     try {
-      if (job._id && !job._id.startsWith('sample-')) {
-        const payload = {
-          bidAmount: Number(bidAmount) || undefined,
-          proposedTimeline,
-          coverLetter,
-          teamId: isTeamBid && userTeam?._id ? userTeam._id : undefined,
-        };
-        await applyForJob(job._id, payload);
+      if (job._id && job._id.startsWith('sample-')) {
+        setError('This is a preview template card. Please refresh your feed to view and apply to live verified jobs from our database.');
+        setSubmitting(false);
+        return;
       }
+
+      const payload = {
+        bidAmount: Number(bidAmount) || undefined,
+        proposedTimeline,
+        coverLetter,
+        teamId: isTeamBid && userTeam?._id ? userTeam._id : undefined,
+      };
+      await applyForJob(job._id, payload);
       setSuccessMsg('Proposal submitted successfully! You can track this under My Gigs.');
       setTimeout(() => {
         if (onApplySuccess) onApplySuccess(job._id);
